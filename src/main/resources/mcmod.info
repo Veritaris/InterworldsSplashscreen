@@ -1,0 +1,15 @@
+[
+    {
+      "modid": "template",
+      "name": "Mod Template",
+      "description": "A template for minecraft 1.7.10 mod",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "updateUrl": "",
+      "authorList": ["Author"],
+      "credits": "All code contributors",
+      "logoFile": "",
+      "screenshots": [],
+      "dependencies": []
+    }
+]
