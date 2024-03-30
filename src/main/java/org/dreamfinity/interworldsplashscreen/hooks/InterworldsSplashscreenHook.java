@@ -23,22 +23,17 @@ public class InterworldsSplashscreenHook {
     @Hook(returnCondition = ReturnCondition.ALWAYS, targetMethod = "drawScreen")
     @SideOnly(Side.CLIENT)
     public static void drawScreen(GuiDownloadTerrain gui, int mouseX, int mouseY, float partialTicks) {
-        NetHandlerPlayClient netHandlerPlayClient = ReflectionHelper.getPrivateValue(GuiDownloadTerrain.class, gui, "field_146594_a", "netHandlerPlayClient");
-        WorldClient worldClient = ReflectionHelper.getPrivateValue(NetHandlerPlayClient.class, netHandlerPlayClient, "field_147300_g", "clientWorldController");
-        String worldName = worldClient.provider.getDimensionName();
-        FontRenderer fontRenderer = ReflectionHelper.getPrivateValue(GuiScreen.class, gui, "field_146289_q", "fontRendererObj");
         gui.drawBackground(0);
+        String worldName = gui.netHandlerPlayClient.clientWorldController.provider.getDimensionName();
         String text = Config.loadingTexts.getOrDefault(worldName, worldName);
-        drawTextBackground(gui.width / 2, gui.height * 3 / 4, fontRenderer.getStringWidth(text), fontRenderer.FONT_HEIGHT);
-        gui.drawCenteredString(fontRenderer, text, gui.width / 2, gui.height * 3 / 4, 16777215);
+        drawTextBackground(gui.width / 2, gui.height * 3 / 4, gui.fontRendererObj.getStringWidth(text), gui.fontRendererObj.FONT_HEIGHT);
+        gui.drawCenteredString(gui.fontRendererObj, text, gui.width / 2, gui.height * 3 / 4, 16777215);
     }
 
     @Hook(returnCondition = ReturnCondition.ALWAYS, targetMethod = "drawBackground", createMethod = true)
     @SideOnly(Side.CLIENT)
     public static void drawBackground(GuiDownloadTerrain gui, int mode) {
-        NetHandlerPlayClient netHandlerPlayClient = ReflectionHelper.getPrivateValue(GuiDownloadTerrain.class, gui, "field_146594_a", "netHandlerPlayClient");
-        WorldClient worldClient = ReflectionHelper.getPrivateValue(NetHandlerPlayClient.class, netHandlerPlayClient, "field_147300_g", "clientWorldController");
-        String worldName = worldClient.provider.getDimensionName();
+        String worldName = gui.netHandlerPlayClient.clientWorldController.provider.getDimensionName();
         drawFullscreenImage(Config.splashes.getOrDefault(worldName, Config.defaultSplash), gui.height, gui.width);
     }
 

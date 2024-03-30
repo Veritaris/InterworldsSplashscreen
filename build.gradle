@@ -93,6 +93,7 @@ jar {
     manifest {
         attributes 'FMLCorePlugin': 'org.dreamfinity.interworldsplashscreen.HookLoader'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'FMLAT': 'iwss_at.cfg'
     }
     if (isClientBuild.toBoolean()) {
         archiveClassifier.set("client")
