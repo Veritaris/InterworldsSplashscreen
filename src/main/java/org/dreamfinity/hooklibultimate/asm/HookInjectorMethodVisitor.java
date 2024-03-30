@@ -7,15 +7,16 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.AdviceAdapter;
 
 /**
- * Класс, непосредственно вставляющий хук в метод. Чтобы указать конкретное место вставки хука, нужно создать класс extends HookInjector.
+ * Класс, непосредственно вставляющий хук в метод.
+ * Чтобы указать конкретное место вставки хука, нужно создать класс extends HookInjector.
  */
 public abstract class HookInjectorMethodVisitor extends AdviceAdapter {
 
+    protected final AsmHook hook;
+    protected final HookInjectorClassVisitor cv;
     public final String methodName;
     public final Type methodType;
     public final boolean isStatic;
-    protected final AsmHook hook;
-    protected final HookInjectorClassVisitor cv;
 
     protected HookInjectorMethodVisitor(MethodVisitor mv, int access, String name, String desc,
                                         AsmHook hook, HookInjectorClassVisitor cv) {
@@ -82,7 +83,7 @@ public abstract class HookInjectorMethodVisitor extends AdviceAdapter {
      */
     public static class LineNumber extends HookInjectorMethodVisitor {
 
-        private final int lineNumber;
+        private int lineNumber;
 
         public LineNumber(MethodVisitor mv, int access, String name, String desc,
                           AsmHook hook, HookInjectorClassVisitor cv, int lineNumber) {

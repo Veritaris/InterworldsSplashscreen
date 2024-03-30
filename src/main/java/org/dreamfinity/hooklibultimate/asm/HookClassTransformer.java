@@ -13,8 +13,8 @@ public class HookClassTransformer {
 
     public HookLogger logger = new SystemOutLogger();
     protected HashMap<String, List<AsmHook>> hooksMap = new HashMap<String, List<AsmHook>>();
+    private HookContainerParser containerParser = new HookContainerParser(this);
     protected ClassMetadataReader classMetadataReader = new ClassMetadataReader();
-    private final HookContainerParser containerParser = new HookContainerParser(this);
 
     public void registerHook(AsmHook hook) {
         if (hooksMap.containsKey(hook.getTargetClassName())) {
@@ -81,12 +81,12 @@ public class HookClassTransformer {
     }
 
     /**
-     * Создает ClassVisitor для списка хуков. Метод можно переопределить, если в ClassVisitor'e нужна своя логика для проверки, является ли метод целевым
-     * (isTargetMethod())
+     * Создает ClassVisitor для списка хуков.
+     * Метод можно переопределить, если в ClassVisitor'e нужна своя логика для проверки,
+     * является ли метод целевым (isTargetMethod())
      *
      * @param cw    ClassWriter, который должен стоять в цепочке после этого ClassVisitor'a
      * @param hooks Список хуков, вставляемых в класс
-     *
      * @return ClassVisitor, добавляющий хуки
      */
     protected HookInjectorClassVisitor createInjectorClassVisitor(ClassWriter cw, List<AsmHook> hooks) {
@@ -94,13 +94,13 @@ public class HookClassTransformer {
     }
 
     /**
-     * Создает ClassWriter для сохранения трансформированного класса. Метод можно переопределить, если в ClassWriter'e нужна своя реализация метода
-     * getCommonSuperClass(). Стандартная реализация работает для уже загруженных классов и для классов, .class файлы которых есть в classpath, но они ещё не
-     * загружены. Во втором случае происходит загрузка (но не инициализация) классов. Если загрузка классов является проблемой, то можно воспользоваться
-     * SafeClassWriter.
+     * Создает ClassWriter для сохранения трансформированного класса.
+     * Метод можно переопределить, если в ClassWriter'e нужна своя реализация метода getCommonSuperClass().
+     * Стандартная реализация работает для уже загруженных классов и для классов, .class файлы которых есть
+     * в classpath, но они ещё не загружены. Во втором случае происходит загрузка (но не инициализация) классов.
+     * Если загрузка классов является проблемой, то можно воспользоваться SafeClassWriter.
      *
      * @param flags Список флагов, которые нужно передать в конструктор ClassWriter'a
-     *
      * @return ClassWriter, сохраняющий трансформированный класс
      */
     protected ClassWriter createClassWriter(int flags) {

@@ -1,17 +1,24 @@
 package org.dreamfinity.hooklibultimate.minecraft;
 
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import net.minecraft.launchwrapper.IClassTransformer;
 import org.dreamfinity.hooklibultimate.asm.AsmHook;
 import org.dreamfinity.hooklibultimate.asm.HookClassTransformer;
 import org.dreamfinity.hooklibultimate.asm.HookInjectorClassVisitor;
+import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 
 import java.util.HashMap;
 import java.util.List;
 
+/** Этим трансформером трансформятся все классы, которые грузятся раньше майновских.
+ * В момент начала загрузки майна (точнее, чуть раньше - в Loader.injectData) все хуки отсюда переносятся в
+ * MinecraftClassTransformer. Такой перенос нужен, чтобы трансформеры хуклибы применялись последними - в частности,
+ * после деобфускации, которую делает фордж.
+ */
 public class PrimaryClassTransformer extends HookClassTransformer implements IClassTransformer {
+
+    // костыль для случая, когда другой мод дергает хуклиб раньше, чем она запустилась
     static PrimaryClassTransformer instance = new PrimaryClassTransformer();
     boolean registeredSecondTransformer;
 
@@ -19,12 +26,34 @@ public class PrimaryClassTransformer extends HookClassTransformer implements ICl
         this.classMetadataReader = HookLoader.getDeobfuscationMetadataReader();
 
         if (instance != null) {
+            // переносим хуки, которые уже успели нарегистрировать
             this.hooksMap.putAll(PrimaryClassTransformer.instance.getHooksMap());
             PrimaryClassTransformer.instance.getHooksMap().clear();
         } else {
             registerHookContainer(SecondaryTransformerHook.class.getName());
         }
         instance = this;
+    }
+
+    @Override
+    public byte[] transform(String oldName, String newName, byte[] bytecode) {
+        return transform(newName, bytecode);
+    }
+
+    @Override
+    protected HookInjectorClassVisitor createInjectorClassVisitor(ClassWriter cw, List<AsmHook> hooks) {
+        // Если ничего не сломается, то никакие майновские классы не должны грузиться этим трансформером -
+        // соответственно, и костыли для деобфускации названий методов тут не нужны.
+        return new HookInjectorClassVisitor(this, cw, hooks) {
+            @Override
+            protected boolean isTargetMethod(AsmHook hook, String name, String desc) {
+                return super.isTargetMethod(hook, name, mapDesc(desc));
+            }
+        };
+    }
+
+    HashMap<String, List<AsmHook>> getHooksMap() {
+        return hooksMap;
     }
 
     static String mapDesc(String desc) {
@@ -63,26 +92,5 @@ public class PrimaryClassTransformer extends HookClassTransformer implements ICl
         } else {
             throw new IllegalArgumentException("Can not map method type!");
         }
-    }
-
-    @Override
-    public byte[] transform(String oldName, String newName, byte[] bytecode) {
-        return transform(newName, bytecode);
-    }
-
-    @Override
-    protected HookInjectorClassVisitor createInjectorClassVisitor(ClassWriter cw, List<AsmHook> hooks) {
-        // Если ничего не сломается, то никакие майновские классы не должны грузиться этим трансформером -
-        // соответственно, и костыли для деобфускации названий методов тут не нужны.
-        return new HookInjectorClassVisitor(this, cw, hooks) {
-            @Override
-            protected boolean isTargetMethod(AsmHook hook, String name, String desc) {
-                return super.isTargetMethod(hook, name, mapDesc(desc));
-            }
-        };
-    }
-
-    HashMap<String, List<AsmHook>> getHooksMap() {
-        return hooksMap;
     }
 }

@@ -1,21 +1,22 @@
 package org.dreamfinity.hooklibultimate.minecraft;
 
-import cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import org.dreamfinity.hooklibultimate.asm.AsmHook;
 import org.dreamfinity.hooklibultimate.asm.ClassMetadataReader;
 import org.dreamfinity.hooklibultimate.asm.HookClassTransformer;
+import cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
 /**
- * Удобная базовая реализация IFMLLoadingPlugin для использования HookLib. Регистрировать хуки и контейнеры нужно в registerHooks().
+ * Удобная базовая реализация IFMLLoadingPlugin для использования HookLib.
+ * Регистрировать хуки и контейнеры нужно в registerHooks().
  */
 public abstract class HookLoader implements IFMLLoadingPlugin {
 
     private static DeobfuscationTransformer deobfuscationTransformer;
 
-    private static final ClassMetadataReader deobfuscationMetadataReader;
+    private static ClassMetadataReader deobfuscationMetadataReader;
 
     static {
         deobfuscationMetadataReader = new DeobfuscationMetadataReader();
@@ -23,7 +24,7 @@ public abstract class HookLoader implements IFMLLoadingPlugin {
 
     public static HookClassTransformer getTransformer() {
         return PrimaryClassTransformer.instance.registeredSecondTransformer ?
-                   MinecraftClassTransformer.instance : PrimaryClassTransformer.instance;
+                MinecraftClassTransformer.instance : PrimaryClassTransformer.instance;
     }
 
     /**
@@ -43,8 +44,8 @@ public abstract class HookLoader implements IFMLLoadingPlugin {
     public static ClassMetadataReader getDeobfuscationMetadataReader() {
         return deobfuscationMetadataReader;
     }
-
-    static DeobfuscationTransformer getDeobfuscationTransformer() {
+	
+	static DeobfuscationTransformer getDeobfuscationTransformer() {
         if (HookLibPlugin.getObfuscated() && deobfuscationTransformer == null) {
             deobfuscationTransformer = new DeobfuscationTransformer();
         }

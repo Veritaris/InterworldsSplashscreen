@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Класс, позволяющий создавать типы из разных входных данных. Эти типы нужны для того, чтобы задавать параметры и возвращаемые значения методов.
+ * Класс, позволяющий создавать типы из разных входных данных.
+ * Эти типы нужны для того, чтобы задавать параметры и возвращаемые значения методов.
  */
 public class TypeHelper {
 
@@ -26,10 +27,10 @@ public class TypeHelper {
     }
 
     /**
-     * Создает тип по названию класса или примитива. Пример использования: getType("net.minecraft.world.World") - вернёт тип для World
+     * Создает тип по названию класса или примитива.
+     * Пример использования: getType("net.minecraft.world.World") - вернёт тип для World
      *
      * @param className необфусцированное название класса
-     *
      * @return соответствующий тип
      */
     public static Type getType(String className) {
@@ -37,11 +38,10 @@ public class TypeHelper {
     }
 
     /**
-     * Создает тип для одномерного массива указанного класса или примитиа. Пример использования: getArrayType("net.minecraft.world.World") - вернёт тип для
-     * World[]
+     * Создает тип для одномерного массива указанного класса или примитиа.
+     * Пример использования: getArrayType("net.minecraft.world.World") - вернёт тип для World[]
      *
      * @param className необфусцированное название класса
-     *
      * @return соответствующий классу тип одномерного массива
      */
     public static Type getArrayType(String className) {
@@ -49,11 +49,10 @@ public class TypeHelper {
     }
 
     /**
-     * Создает тип для n-мерного массива указанного класса или примитива. Пример использования: getArrayType("net.minecraft.world.World", 2) - вернёт тип для
-     * World[][]
+     * Создает тип для n-мерного массива указанного класса или примитива.
+     * Пример использования: getArrayType("net.minecraft.world.World", 2) - вернёт тип для World[][]
      *
      * @param className название класса
-     *
      * @return соответствующий классу тип n-мерного массива
      */
     public static Type getArrayType(String className, int arrayDimensions) {

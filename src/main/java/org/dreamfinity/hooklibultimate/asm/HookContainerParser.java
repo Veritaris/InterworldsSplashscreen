@@ -10,24 +10,28 @@ import java.util.Map.Entry;
 
 public class HookContainerParser {
 
-    private static final String HOOK_DESC = Type.getDescriptor(Hook.class);
-    private static final String LOCAL_DESC = Type.getDescriptor(LocalVariable.class);
-    private static final String RETURN_DESC = Type.getDescriptor(ReturnValue.class);
-    private final HookClassTransformer transformer;
+    private HookClassTransformer transformer;
     private String currentClassName;
     private String currentMethodName;
     private String currentMethodDesc;
     private boolean currentMethodPublicStatic;
+
     /*
     Ключ - название значения аннотации
      */
     private HashMap<String, Object> annotationValues;
+
     /*
     Ключ - номер параметра, значение - номер локальной переменной для перехвата
     или -1 для перехвата значения наверху стека.
      */
-    private final HashMap<Integer, Integer> parameterAnnotations = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> parameterAnnotations = new HashMap<Integer, Integer>();
+
     private boolean inHookAnnotation;
+
+    private static final String HOOK_DESC = Type.getDescriptor(Hook.class);
+    private static final String LOCAL_DESC = Type.getDescriptor(LocalVariable.class);
+    private static final String RETURN_DESC = Type.getDescriptor(ReturnValue.class);
 
     public HookContainerParser(HookClassTransformer transformer) {
         this.transformer = transformer;
@@ -63,13 +67,13 @@ public class HookContainerParser {
 
         if (argumentTypes.length < 1) {
             invalidHook("Hook method has no parameters. First parameter of a " +
-                            "hook method must belong the type of the target class.");
+                    "hook method must belong the type of the target class.");
             return;
         }
 
         if (argumentTypes[0].getSort() != Type.OBJECT) {
             invalidHook("First parameter of the hook method is not an object. First parameter of a " +
-                            "hook method must belong the type of the target class.");
+                    "hook method must belong the type of the target class.");
             return;
         }
 

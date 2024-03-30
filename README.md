@@ -26,11 +26,12 @@ Configuration:
     # Default splash to be used if not set for world [default: Overworld]
     S:defaultSplash=Overworld_water
 
-    # Splashes images to be used in loading screen. Use just filename without extension. Files must be stored in folder splashes in mod's config directory [default: [Nether:Nether], [The End:The End], [Overworld:Overworld], [splashConnecting:Overworld], [splashDisconnecting:Overworld]]
+    # Splashes images to be used in loading screen. Use just filename without extension. 
+    # Files must be stored in fo[crash-2024-03-30_04.16.58-client.txt](..%2FtestClient%2Fcrash-reports%2Fcrash-2024-03-30_04.16.58-client.txt)lder splashes in mod's config directory [default: [Nether:Nether], [The End:The End], [Overworld:Overworld], [splashConnecting:Overworld], [splashDisconnecting:Overworld]]
     S:splashesPaths <
         Nether:Nether
         The End:The End
-        Overworld:Overworld_water
+        Overworld:Overworld_water[crash-2024-03-30_04.16.58-client.txt](..%2FtestClient%2Fcrash-reports%2Fcrash-2024-03-30_04.16.58-client.txt)
         splashConnecting:Overworld
         splashDisconnecting:Overworld
      >

@@ -23,9 +23,8 @@ public class HookInjectorClassVisitor extends ClassVisitor {
         this.transformer = transformer;
     }
 
-    @Override
-    public void visit(int version, int access, String name,
-                      String signature, String superName, String[] interfaces) {
+    @Override public void visit(int version, int access, String name,
+                                String signature, String superName, String[] interfaces) {
         this.superName = superName;
         super.visit(version, access, name, signature, superName, interfaces);
     }

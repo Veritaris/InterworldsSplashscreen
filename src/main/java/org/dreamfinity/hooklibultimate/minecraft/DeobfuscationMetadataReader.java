@@ -1,9 +1,9 @@
 package org.dreamfinity.hooklibultimate.minecraft;
 
+import org.dreamfinity.hooklibultimate.asm.ClassMetadataReader;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.dreamfinity.hooklibultimate.asm.ClassMetadataReader;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -18,11 +18,34 @@ public class DeobfuscationMetadataReader extends ClassMetadataReader {
     static {
         try {
             runTransformers = LaunchClassLoader.class.getDeclaredMethod("runTransformers",
-                String.class, String.class, byte[].class);
+                    String.class, String.class, byte[].class);
             runTransformers.setAccessible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public byte[] getClassData(String className) throws IOException {
+        byte[] bytes = super.getClassData(unmap(className.replace('.', '/')));
+        return deobfuscateClass(className, bytes);
+    }
+
+    @Override
+    protected boolean checkSameMethod(String sourceName, String sourceDesc, String targetName, String targetDesc) {
+        return checkSameMethod(sourceName, targetName) && sourceDesc.equals(targetDesc);
+    }
+
+    // Фордж и прочее могут своими патчами добавлять методы, которые нужно уметь оверрайдить хуками.
+    // Для этого приходится применять трансформеры во время поиска супер-методов
+    // этот метод должен вызываться только во время загрузки сабклассов проверяемого класса,
+    // так что все должно быть норм
+    @Override
+    protected MethodReference getMethodReferenceASM(String type, String methodName, String desc) throws IOException {
+        FindMethodClassVisitor cv = new FindMethodClassVisitor(methodName, desc);
+        byte[] bytes = getTransformedBytes(type);
+        acceptVisitor(bytes, cv);
+        return cv.found ? new MethodReference(type, cv.targetName, cv.targetDesc) : null;
     }
 
     static byte[] deobfuscateClass(String className, byte[] bytes) {
@@ -63,29 +86,6 @@ public class DeobfuscationMetadataReader extends ClassMetadataReader {
             }
         }
         return srgName.equals(mcpName);
-    }
-
-    @Override
-    public byte[] getClassData(String className) throws IOException {
-        byte[] bytes = super.getClassData(unmap(className.replace('.', '/')));
-        return deobfuscateClass(className, bytes);
-    }
-
-    @Override
-    protected boolean checkSameMethod(String sourceName, String sourceDesc, String targetName, String targetDesc) {
-        return checkSameMethod(sourceName, targetName) && sourceDesc.equals(targetDesc);
-    }
-
-    // Фордж и прочее могут своими патчами добавлять методы, которые нужно уметь оверрайдить хуками.
-    // Для этого приходится применять трансформеры во время поиска супер-методов
-    // этот метод должен вызываться только во время загрузки сабклассов проверяемого класса,
-    // так что все должно быть норм
-    @Override
-    protected MethodReference getMethodReferenceASM(String type, String methodName, String desc) throws IOException {
-        FindMethodClassVisitor cv = new FindMethodClassVisitor(methodName, desc);
-        byte[] bytes = getTransformedBytes(type);
-        acceptVisitor(bytes, cv);
-        return cv.found ? new MethodReference(type, cv.targetName, cv.targetDesc) : null;
     }
 
 }

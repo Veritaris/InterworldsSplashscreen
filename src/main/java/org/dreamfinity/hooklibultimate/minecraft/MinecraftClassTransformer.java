@@ -1,9 +1,9 @@
 package org.dreamfinity.hooklibultimate.minecraft;
 
-import net.minecraft.launchwrapper.IClassTransformer;
 import org.dreamfinity.hooklibultimate.asm.AsmHook;
 import org.dreamfinity.hooklibultimate.asm.HookClassTransformer;
 import org.dreamfinity.hooklibultimate.asm.HookInjectorClassVisitor;
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.BufferedInputStream;
@@ -16,14 +16,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Этот трансформер занимается вставкой хуков с момента запуска майнкрафта. Здесь сосредоточены все костыли, которые необходимы для правильной работы с
- * обфусцированными названиями методов.
+ * Этот трансформер занимается вставкой хуков с момента запуска майнкрафта. Здесь сосредоточены все костыли,
+ * которые необходимы для правильной работы с обфусцированными названиями методов.
  */
 public class MinecraftClassTransformer extends HookClassTransformer implements IClassTransformer {
 
     static MinecraftClassTransformer instance;
-    private static final List<IClassTransformer> postTransformers = new ArrayList<IClassTransformer>();
     private Map<Integer, String> methodNames;
+
+    private static List<IClassTransformer> postTransformers = new ArrayList<IClassTransformer>();
 
     public MinecraftClassTransformer() {
         instance = this;
@@ -44,23 +45,6 @@ public class MinecraftClassTransformer extends HookClassTransformer implements I
         this.hooksMap.putAll(PrimaryClassTransformer.instance.getHooksMap());
         PrimaryClassTransformer.instance.getHooksMap().clear();
         PrimaryClassTransformer.instance.registeredSecondTransformer = true;
-    }
-
-    public static int getMethodId(String srgName) {
-        if (srgName.startsWith("func_")) {
-            int first = srgName.indexOf('_');
-            int second = srgName.indexOf('_', first + 1);
-            return Integer.valueOf(srgName.substring(first + 1, second));
-        } else {
-            return -1;
-        }
-    }
-
-    /**
-     * Регистрирует трансформер, который будет запущен после обычных, и в том числе после деобфусцирующего трансформера.
-     */
-    public static void registerPostTransformer(IClassTransformer transformer) {
-        postTransformers.add(transformer);
     }
 
     private HashMap<Integer, String> loadMethodNames() throws IOException {
@@ -103,5 +87,22 @@ public class MinecraftClassTransformer extends HookClassTransformer implements I
 
     public Map<Integer, String> getMethodNames() {
         return methodNames;
+    }
+
+    public static int getMethodId(String srgName) {
+        if (srgName.startsWith("func_")) {
+            int first = srgName.indexOf('_');
+            int second = srgName.indexOf('_', first + 1);
+            return Integer.valueOf(srgName.substring(first + 1, second));
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * Регистрирует трансформер, который будет запущен после обычных, и в том числе после деобфусцирующего трансформера.
+     */
+    public static void registerPostTransformer(IClassTransformer transformer) {
+        postTransformers.add(transformer);
     }
 }

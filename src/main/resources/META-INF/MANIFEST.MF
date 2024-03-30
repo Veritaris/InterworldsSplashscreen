@@ -1,1 +1,3 @@
 Manifest-Version: 1.0
+FMLCorePlugin: org.dreamfinity.interworldsplashscreen.HookLoader
+FMLCorePluginContainsFMLMod: true

@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Позволяет при помощи велосипеда из костылей искать методы внутри незагруженных классов и общие суперклассы для чего угодно. Работает через поиск class-файлов
- * в classpath, и, в случае провала - ищет через рефлексию. Для работы с майнкрафтом используется сабкласс под названием DeobfuscationMetadataReader,
+ * Позволяет при помощи велосипеда из костылей искать методы внутри незагруженных классов
+ * и общие суперклассы для чего угодно. Работает через поиск class-файлов в classpath, и, в случае провала -
+ * ищет через рефлексию. Для работы с майнкрафтом используется сабкласс под названием DeobfuscationMetadataReader,
+ *
  */
 public class ClassMetadataReader {
     private static Method m;
@@ -84,7 +86,8 @@ public class ClassMetadataReader {
     }
 
     /**
-     * Возвращает суперклассы в порядке возрастающей конкретности (начиная с java/lang/Object и заканчивая данным типом)
+     * Возвращает суперклассы в порядке возрастающей конкретности (начиная с java/lang/Object
+     * и заканчивая данным типом)
      */
     public ArrayList<String> getSuperClasses(String type) {
         ArrayList<String> superclasses = new ArrayList<String>(1);
@@ -131,32 +134,6 @@ public class ClassMetadataReader {
         return "java/lang/Object";
     }
 
-    public static class MethodReference {
-
-        public final String owner;
-        public final String name;
-        public final String desc;
-
-        public MethodReference(String owner, String name, String desc) {
-            this.owner = owner;
-            this.name = name;
-            this.desc = desc;
-        }
-
-        public Type getType() {
-            return Type.getMethodType(desc);
-        }
-
-        @Override
-        public String toString() {
-            return "MethodReference{" +
-                       "owner='" + owner + '\'' +
-                       ", name='" + name + '\'' +
-                       ", desc='" + desc + '\'' +
-                       '}';
-        }
-    }
-
     private class CheckSuperClassVisitor extends ClassVisitor {
 
         String superClassName;
@@ -193,6 +170,31 @@ public class ClassMetadataReader {
                 targetDesc = desc;
             }
             return null;
+        }
+    }
+
+    public static class MethodReference {
+
+        public final String owner;
+        public final String name;
+        public final String desc;
+
+        public MethodReference(String owner, String name, String desc) {
+            this.owner = owner;
+            this.name = name;
+            this.desc = desc;
+        }
+
+        public Type getType() {
+            return Type.getMethodType(desc);
+        }
+
+        @Override public String toString() {
+            return "MethodReference{" +
+                    "owner='" + owner + '\'' +
+                    ", name='" + name + '\'' +
+                    ", desc='" + desc + '\'' +
+                    '}';
         }
     }
 

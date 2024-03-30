@@ -12,21 +12,6 @@ public class HookLibPlugin implements IFMLLoadingPlugin {
     private static boolean obf;
     private static boolean checked;
 
-    public static boolean getObfuscated() {
-        if (!checked) {
-            try {
-                Field deobfField = CoreModManager.class.getDeclaredField("deobfuscatedEnvironment");
-                deobfField.setAccessible(true);
-                obf = !deobfField.getBoolean(null);
-                FMLRelaunchLog.info("[HOOKLIB] " + " Obfuscated: " + obf);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            checked = true;
-        }
-        return obf;
-    }
-
     // 1.6.x only
     public String[] getLibraryRequestClass() {
         return null;
@@ -39,7 +24,7 @@ public class HookLibPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {PrimaryClassTransformer.class.getName()};
+        return new String[]{PrimaryClassTransformer.class.getName()};
     }
 
     @Override
@@ -53,6 +38,20 @@ public class HookLibPlugin implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
+    public void injectData(Map<String, Object> data) {}
+
+    public static boolean getObfuscated() {
+        if (!checked) {
+            try {
+                Field deobfField = CoreModManager.class.getDeclaredField("deobfuscatedEnvironment");
+                deobfField.setAccessible(true);
+                obf = !deobfField.getBoolean(null);
+                FMLRelaunchLog.info("[HOOKLIB] " + " Obfuscated: " + obf);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            checked = true;
+        }
+        return obf;
     }
 }
